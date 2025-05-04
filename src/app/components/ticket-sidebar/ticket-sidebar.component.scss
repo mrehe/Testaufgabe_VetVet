@@ -1,0 +1,24 @@
+.ticket-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Anfangs außerhalb des Bildschirms */
+    width: 300px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease-in-out; /* Animation hinzufügen */
+    z-index: 50;
+  }
+  
+  .ticket-sidebar.open {
+    right: 0; /* Sidebar fährt ein */
+  }
+  
+  .ticket-sidebar .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  

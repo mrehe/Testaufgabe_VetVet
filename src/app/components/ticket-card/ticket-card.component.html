@@ -1,0 +1,6 @@
+<!-- src/app/components/ticket-card/ticket-card.component.html -->
+<div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition">
+    <h4 class="text-md font-semibold text-gray-700">{{ ticket.betreff }}</h4>
+    <p class="text-sm text-gray-500">{{ ticket.patient }}</p>
+    <p class="text-xs text-gray-400 mt-1">Erstellt am {{ ticket.erstelltAm | date:'shortDate' }}</p>
+</div>

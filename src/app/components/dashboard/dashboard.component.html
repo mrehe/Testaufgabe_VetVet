@@ -1,0 +1,108 @@
+<!-- src/app/components/dashboard/dashboard.component.html -->
+<div class="relative min-h-screen p-6 bg-gray-50 rounded-2xl shadow-lg overflow-hidden">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">Tieruntersuchungen</h2>
+    <button 
+      class="text-sm bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg"
+      (click)="openModal()">
+      Neues Ticket
+    </button>
+  </header>
+
+  <!-- Filter and Stats -->
+  <div class="flex justify-between items-center mb-6 space-x-4">
+    <div class="flex space-x-4">
+      <button 
+        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+        (click)="filterTicketsByStatus('Eingegangen')">
+        Filtern nach 'Eingegangen'
+      </button>
+      <button 
+        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+        (click)="filterTicketsByStatus('In Bearbeitung')">
+        Filtern nach 'In Bearbeitung'
+      </button>
+      <button 
+        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+        (click)="filterTicketsByStatus('Nachfrage')">
+        Filtern nach 'Nachfrage'
+      </button>
+      <button 
+        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+        (click)="filterTicketsByStatus('Fertig')">
+        Filtern nach 'Fertig'
+      </button>
+      <button 
+        class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded-lg"
+        (click)="clearFilter()">
+        Alle anzeigen
+      </button>
+    </div>
+    <div class="text-center">
+      <p class="text-sm text-gray-500">Gesamtzahl der Tickets: {{ totalTickets }}</p>
+    </div>
+  </div>
+
+  <!-- Ticket Chart (ngx-charts) -->
+  <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-bold text-gray-700 text-center mb-4">Ticket Übersicht</h2>
+    
+    <ngx-charts-pie-chart
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="ticketChartData"
+      [legend]="true"
+      [doughnut]="true"
+      [labels]="true">
+    </ngx-charts-pie-chart>
+  </div>
+
+  <!-- Tickets Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div *ngFor="let status of statusSpalten" class="bg-white p-4 rounded-lg shadow-md min-h-[400px] flex flex-col">
+      <h3 class="text-lg font-semibold mb-4 text-center text-gray-700">{{ status }}</h3>
+
+      <div class="space-y-4 flex-1">
+        <app-ticket-card 
+          *ngFor="let ticket of getTicketsByStatus(status)"
+          [ticket]="ticket"
+          (click)="openSidebar(ticket)">
+        </app-ticket-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button 
+    (click)="openModal()" 
+    class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white text-3xl rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all z-50">
+    +
+  </button>
+
+  <!-- Modal für neues Ticket -->
+  <app-ticket-create-modal 
+    *ngIf="modalVisible"
+    (ticketCreated)="createNewTicket($event)" 
+    (modalClosed)="closeModal()">
+  </app-ticket-create-modal>
+
+  <!-- Sidebar + Overlay -->
+  <div *ngIf="selectedTicket" class="fixed inset-0 flex z-40">
+    <div 
+      class="flex-1"
+      (click)="closeSidebar()">
+    </div>
+
+    <div 
+      class="w-80 bg-white h-full shadow-lg transform transition-transform duration-300 ease-in-out">
+      <app-ticket-sidebar
+        *ngIf="selectedTicket"
+        [ticket]="selectedTicket"
+        (close)="closeSidebar()"
+        (statusChanged)="onStatusChanged($event)">
+      </app-ticket-sidebar>
+    </div>
+  </div>
+</div>

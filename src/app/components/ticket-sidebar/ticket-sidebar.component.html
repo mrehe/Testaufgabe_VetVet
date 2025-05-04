@@ -1,0 +1,55 @@
+<div *ngIf="ticket" class="space-y-4">
+  <!-- Tier-ID -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Tier-ID</label>
+    <input type="text"
+           class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+           [(ngModel)]="ticket.tierId">
+  </div>
+
+  <!-- Patient -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Patient</label>
+    <input type="text"
+           class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+           [(ngModel)]="ticket.patient">
+  </div>
+
+  <!-- Untersuchungsdatum -->
+  <div *ngIf="isValidDate(ticket.untersuchungsDatum)">
+    <label class="block text-sm font-medium text-gray-700 mb-1">Untersuchungsdatum</label>
+    <input type="text"
+           class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+           [(ngModel)]="ticket.untersuchungsDatum">
+  </div>
+
+  <!-- Befund -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Befund</label>
+    <textarea class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+              [(ngModel)]="ticket.befund"></textarea>
+  </div>
+
+  <!-- Behandlungsempfehlung -->
+  <div *ngIf="ticket.behandlungEmpfehlung">
+    <label class="block text-sm font-medium text-gray-700 mb-1">Behandlungsempfehlung</label>
+    <textarea class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+              [(ngModel)]="ticket.behandlungEmpfehlung"></textarea>
+  </div>
+
+  <!-- Status -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+    <select [(ngModel)]="ticket.status"
+            class="w-full border border-gray-300 rounded-md p-2">
+      <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+    </select>
+  </div>
+
+  <!-- Löschen Button -->
+  <div class="flex justify-between space-x-4">
+    <button (click)="deleteTicket()" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg">
+      Löschen
+    </button>
+  </div>
+</div>
