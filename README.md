@@ -57,3 +57,11 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+Ich habe mir gedacht, das ich die erstellung der Tickets und anschauung der Tickets auf einer Seite verreine wodurch ich eine übersichlichere Ticketverarbeitung schaffen wollte.
+
+Ich habe es extra als eine Art Kanban boad angelegt, damit aktuelle Tickets besser eingesehen und bearbeitet werden können.
+
+Leider hatte ich jedoch Zeitliche probleme, ich habe den Ticket Service nochmal komplett verändert, was zu den Problem führte, das ich aktuell keine Tickets mehr erstellen kann.
+
+
