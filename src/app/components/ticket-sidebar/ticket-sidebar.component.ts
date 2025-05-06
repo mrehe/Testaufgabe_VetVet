@@ -15,15 +15,15 @@ export class TicketSidebarComponent implements AfterViewInit {
   @Input() ticket!: Ticket;
   @Output() close = new EventEmitter<void>();
   @Output() statusChanged = new EventEmitter<{ ticketId: string; newStatus: string }>();
-  @Output() ticketDeleted = new EventEmitter<string>(); // EventEmitter für das Löschen des Tickets
+  @Output() ticketDeleted = new EventEmitter<string>();
 
   statusOptions: string[] = ['Eingegangen', 'In Bearbeitung', 'Nachfrage', 'Fertig'];
-  isEditing = true; // Sofort in den Bearbeitungsmodus gehen
+  isEditing = true;
 
   constructor(private ticketService: TicketService) {}
 
   ngAfterViewInit() {
-    console.log('ngAfterViewInit: Sidebar öffnet Ticket', this.ticket); // Initiale Ticket-Details beim ersten Laden
+    console.log('ngAfterViewInit: Sidebar öffnet Ticket', this.ticket);
   }
 
   // Änderungen speichern
@@ -33,7 +33,7 @@ export class TicketSidebarComponent implements AfterViewInit {
       this.ticketService.updateTicketStatus(this.ticket.id, this.ticket.status).subscribe(() => {
         console.log('saveChanges: Ticket gespeichert:', this.ticket);
         this.statusChanged.emit({ ticketId: this.ticket.id, newStatus: this.ticket.status });
-        this.isEditing = false; // Bearbeitungsmodus beenden
+        this.isEditing = false;
       });
     }
   }
@@ -44,8 +44,8 @@ export class TicketSidebarComponent implements AfterViewInit {
     if (this.ticket && this.ticket.id) {
       this.ticketService.deleteTicket(this.ticket.id).subscribe(() => {
         console.log('deleteTicket: Ticket gelöscht');
-        this.ticketDeleted.emit(this.ticket.id); // Ticket-ID an das Dashboard weitergeben
-        this.closeSidebar(); // Sidebar nach dem Löschen schließen
+        this.ticketDeleted.emit(this.ticket.id);
+        this.closeSidebar();
       });
     }
   }

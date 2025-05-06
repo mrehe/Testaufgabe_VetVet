@@ -10,50 +10,64 @@ export class TicketService {
   ticketChanged = new EventEmitter<void>(); // Emit event, wenn Tickets geändert werden
 
   constructor() {
-    // Wenn es im localStorage gespeicherte Tickets gibt, lade sie
+    // Wenn es gespeicherte Tickets gibt, lade sie
     const savedTickets = localStorage.getItem('tickets');
     if (savedTickets) {
-      this.tickets = JSON.parse(savedTickets); // Aus localStorage laden
+      this.tickets = JSON.parse(savedTickets);
     }
   }
 
   // Alle Tickets abrufen
   getTickets(): Observable<Ticket[]> {
-    return of(this.tickets); // Gibt die Tickets als Observable zurück
+    return of(this.tickets);
   }
 
-  // Ein neues Ticket hinzufügen
+  // Neues Ticket hinzufügen
   addTicket(ticket: Ticket): Observable<Ticket> {
     ticket.id = 'T-' + (this.tickets.length + 1).toString().padStart(3, '0'); // ID generieren
     ticket.erstelltAm = new Date(); // Erstellungsdatum setzen
 
-    this.tickets.push(ticket); // Ticket zum lokalen Array hinzufügen
-    this.saveToLocalStorage(); // Speichere die Tickets im localStorage
-    this.ticketChanged.emit(); // Emit event für Änderungen
-    return of(ticket); // Gibt das neue Ticket als Observable zurück
+    this.tickets.push(ticket); // Füge Ticket hinzu
+    this.saveToLocalStorage(); // Speichere alle Tickets in localStorage
+    this.ticketChanged.emit(); // Benachrichtige alle Komponenten
+    return of(ticket); // Rückgabe des hinzugefügten Tickets
   }
 
-  // Status eines Tickets aktualisieren
-  updateTicketStatus(ticketId: string, newStatus: string): Observable<void> {
+  // Status eines bestehenden Tickets aktualisieren
+  updateTicketStatus(ticketId: string, newStatus: string): Observable<Ticket | null> {
     const ticket = this.tickets.find(t => t.id === ticketId);
     if (ticket) {
-      ticket.status = newStatus;
-      this.saveToLocalStorage(); // Änderungen im localStorage speichern
-      this.ticketChanged.emit(); // Emit event für Änderungen
+      ticket.status = newStatus; // Status ändern
+      this.saveToLocalStorage(); // Speichern der geänderten Liste
+      this.ticketChanged.emit(); // Event auslösen
+      return of(ticket); // Rückgabe des geänderten Tickets
+    } else {
+      console.warn(`[TicketService] updateTicketStatus: Ticket mit ID ${ticketId} nicht gefunden.`);
+      return of(null); // Wenn Ticket nicht gefunden wird, null zurückgeben
     }
-    return of(); // Gibt ein leeres Observable zurück
   }
 
-  // Ticket löschen
-  deleteTicket(ticketId: string): Observable<void> {
-    this.tickets = this.tickets.filter(ticket => ticket.id !== ticketId);
-    this.saveToLocalStorage();
-    this.ticketChanged.emit(); // Emit event für Änderungen
-    return of(); // Gibt ein leeres Observable zurück
+  // Ein Ticket löschen
+  deleteTicket(ticketId: string): Observable<string | null> {
+    const ticketIndex = this.tickets.findIndex(ticket => ticket.id === ticketId);
+    if (ticketIndex !== -1) {
+      this.tickets.splice(ticketIndex, 1); // Ticket aus dem Array entfernen
+      this.saveToLocalStorage(); // Änderungen speichern
+      this.ticketChanged.emit(); // Event auslösen
+      return of(ticketId); // Rückgabe der ID des gelöschten Tickets
+    } else {
+      console.warn(`[TicketService] deleteTicket: Ticket mit ID ${ticketId} nicht gefunden.`);
+      return of(null); // Wenn Ticket nicht gefunden wird, null zurückgeben
+    }
   }
 
   // Tickets im localStorage speichern
   private saveToLocalStorage() {
-    localStorage.setItem('tickets', JSON.stringify(this.tickets)); // Tickets im localStorage speichern
+    try {
+      localStorage.setItem('tickets', JSON.stringify(this.tickets)); // Alle Tickets als JSON speichern
+      console.log("Tickets wurden im LocalStorage gespeichert", this.tickets);
+    } catch (e) {
+      console.error('Fehler beim Speichern der Tickets im LocalStorage', e);
+    }
   }
 }

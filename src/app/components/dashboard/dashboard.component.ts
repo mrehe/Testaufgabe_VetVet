@@ -101,12 +101,14 @@ export class DashboardComponent implements OnInit {
 
   onStatusChanged(event: { ticketId: string; newStatus: string }) {
     console.log('Status geändert:', event);
-    this.ticketService.updateTicketStatus(event.ticketId, event.newStatus).subscribe(() => {
-      console.log('Status geändert und Tickets neu laden');
-      this.loadTickets(); // Tickets neu laden nach Statusänderung
+    this.ticketService.updateTicketStatus(event.ticketId, event.newStatus).subscribe(ticket => {
+      if (ticket) {
+        console.log('Ticket erfolgreich aktualisiert:', ticket);
+      } else {
+        console.error('Ticket konnte nicht aktualisiert werden!');
+      }
+      this.loadTickets(); // Tickets nach Statusänderung neu laden
       this.selectedTicket = null; // Sidebar schließen
-    }, error => {
-      console.error('Fehler beim Ändern des Status:', error);
     });
   }
 
@@ -173,10 +175,5 @@ export class DashboardComponent implements OnInit {
 
     // Benachrichtige Angular, dass Änderungen vorgenommen wurden
     this.cdr.detectChanges();
-    console.log('Tickets nach Löschen:', this.tickets);
-
-    // Diagrammdaten nach dem Löschen aktualisieren
-    this.updateChartData();
   }
 }
-  	
